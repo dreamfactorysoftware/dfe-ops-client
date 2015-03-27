@@ -2,6 +2,7 @@
 namespace DreamFactory\Enterprise\Console\Ops\Services;
 
 use DreamFactory\Enterprise\Common\Services\BaseService;
+use DreamFactory\Library\Fabric\Common\Components\JsonFile;
 use DreamFactory\Library\Utility\IfSet;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -46,13 +47,23 @@ class OpsClientService extends BaseService
      * @param int    $port         The port on which to connect
      * @param string $clientId     Your application's client ID
      * @param string $clientSecret Your application's secret ID
+     *
+     * @return $this
      */
-    public function create( $appServer, $clientId, $clientSecret, $port = 80 )
+    public function connect( $appServer, $clientId, $clientSecret, $port = 80 )
     {
         $this->_signature = $this->_generateSignature( $clientId, $clientSecret );
         $this->_clientId = $clientId;
 
-        $_endpoint = ( 443 === $port ? 'https' : 'http' ) . '://' . trim( $appServer, '/ ' ) . '/api/v' . static::API_VERSION . '/ops';
+        $appServer = trim( $appServer, '/ ' );
+
+        if ( false === stripos( $appServer, 'http', 0 ) )
+        {
+            $appServer = ( 443 === $port ? 'https' : 'http' ) . '://' . $appServer;
+        }
+
+        //  base_url for guzzle NEEDS trailing slash in order to work properly
+        $_endpoint = $appServer . '/api/v' . static::API_VERSION . '/ops/';
 
         //  Check the endpoint...
         if ( false === parse_url( $_endpoint ) )
@@ -62,6 +73,8 @@ class OpsClientService extends BaseService
 
         //  Create our client
         $this->_client = new Client( ['base_url' => $_endpoint] );
+
+        return $this;
     }
 
     /**
@@ -166,10 +179,11 @@ class OpsClientService extends BaseService
      * @param array  $payload
      * @param array  $options
      * @param string $method
+     * @param bool   $object If true, the result is returned as an object instead of an array
      *
-     * @return bool|array
+     * @return array|bool
      */
-    protected function _apiCall( $url, $payload = [], $options = [], $method = Request::METHOD_POST )
+    protected function _apiCall( $url, $payload = [], $options = [], $method = Request::METHOD_POST, $object = true )
     {
         if ( !isset( $options['body'] ) )
         {
@@ -183,13 +197,13 @@ class OpsClientService extends BaseService
             $_request = $this->_client->createRequest( $method, $url, $options );
             $_response = $this->_client->send( $_request );
 
-            return $_response->json();
+            return $_response->json( ['object' => $object] );
         }
         catch ( RequestException $_ex )
         {
             if ( $_ex->hasResponse() )
             {
-                return $_ex->getResponse();
+                return JsonFile::encode( $_ex->getResponse() );
             }
         }
 

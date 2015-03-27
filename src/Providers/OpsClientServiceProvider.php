@@ -43,7 +43,14 @@ class OpsClientServiceProvider extends BaseServiceProvider
             static::IOC_NAME,
             function ( $app )
             {
-                return new OpsClientService( $app );
+                $_service = new OpsClientService( $app );
+
+                return $_service->connect(
+                    config( 'dashboard.api-host' ),
+                    config( 'dashboard.client-id' ),
+                    config( 'dashboard.client-secret' ),
+                    config( 'dashboard.api-port', 80 )
+                );
             }
         );
     }
