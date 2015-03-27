@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: DreamFactory\Enterprise\Console\Ops
+        psr4_prefix: DreamFactory\Enterprise\Console\Ops
+        src_path: app

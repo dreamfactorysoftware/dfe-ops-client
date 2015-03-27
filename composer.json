@@ -1,0 +1,60 @@
+{
+	"name":              "dreamfactory/dfe-ops-client",
+	"description":       "DreamFactory Enterprise(tm) Console Operations Client",
+	"homepage":          "https://www.dreamfactory.com/",
+	"keywords":          [
+		"dreamfactory",
+		"fabric",
+		"utility",
+		"queue",
+		"common",
+		"enterprise"
+	],
+	"license":           ["Apache-2.0"],
+	"type":              "library",
+	"authors":           [
+		{
+			"name":  "Jerry Ablan",
+			"email": "jerryablan@dreamfactory.com"
+		}
+	],
+	"repositories":      [
+		{
+			"type": "vcs",
+			"url":  "git@github.com:dreamfactorysoftware/fabric-common.git"
+		},
+		{
+			"type": "vcs",
+			"url":  "git@github.com:dreamfactorysoftware/fabric-db.git"
+		},
+		{
+			"type": "vcs",
+			"url":  "git@github.com:dreamfactorysoftware/dfe-common.git"
+		}
+	],
+	"minimum-stability": "dev",
+	"require":           {
+		"dreamfactory/dfe-common": "dev-develop as dev-master",
+		"guzzlehttp/guzzle":       "~4.0"
+	},
+	"require-dev":       {
+		"dreamfactory/fabric-audit":  "dev-develop as dev-master",
+		"dreamfactory/fabric-common": "dev-develop as dev-master",
+		"laravel/framework":          "5.0.*",
+		"phpunit/phpunit":            "~4.0",
+		"phpspec/phpspec":            "~2.1"
+	},
+	"autoload":          {
+		"psr-4": {
+			"DreamFactory\\Enterprise\\Console\\Ops\\": "src/"
+		}
+	},
+	"config":            {
+		"preferred-install": "dist"
+	},
+	"extra":             {
+		"branch-alias": {
+			"dev-develop": "0.1.x-dev"
+		}
+	}
+}
