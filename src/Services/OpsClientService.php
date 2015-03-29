@@ -86,6 +86,16 @@ class OpsClientService extends BaseService
     }
 
     /**
+     * @param $id
+     *
+     * @return \stdClass|bool
+     */
+    public function status( $id )
+    {
+        return $this->post( 'status', ['id' => $id] );
+    }
+
+    /**
      * Register a new user
      *
      * @param array $payload
