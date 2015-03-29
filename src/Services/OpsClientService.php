@@ -3,6 +3,7 @@ namespace DreamFactory\Enterprise\Console\Ops\Services;
 
 use DreamFactory\Enterprise\Common\Services\BaseService;
 use DreamFactory\Library\Fabric\Common\Components\JsonFile;
+use DreamFactory\Library\Fabric\Database\Enums\ProvisionStates;
 use DreamFactory\Library\Utility\IfSet;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -78,7 +79,7 @@ class OpsClientService extends BaseService
     }
 
     /**
-     * @return array|bool
+     * @return \stdClass
      */
     public function instances()
     {
@@ -88,11 +89,30 @@ class OpsClientService extends BaseService
     /**
      * @param $id
      *
-     * @return \stdClass|bool
+     * @return \stdClass
      */
     public function status( $id )
     {
-        return $this->post( 'status', ['id' => $id] );
+        $_status = $this->post( 'status', ['id' => $id] );
+        $_status->deleted = false;
+
+        if ( !$_status->success )
+        {
+            if ( isset( $_status->code, $_status->message ) )
+            {
+                $_status->provisioned = false;
+                $_status->deprovisioned = false;
+                $_status->trial = false;
+                $_status->instanceState = ProvisionStates::DEPROVISIONED;
+
+                if ( Response::HTTP_NOT_FOUND == $_status->code )
+                {
+                    $_status->deleted = true;
+                }
+            }
+        }
+
+        return $_status;
     }
 
     /**
@@ -153,7 +173,7 @@ class OpsClientService extends BaseService
      * @param array  $payload
      * @param array  $options
      *
-     * @return array|bool
+     * @return \stdClass|array|bool
      */
     public function post( $uri, $payload = [], $options = [] )
     {
@@ -165,7 +185,7 @@ class OpsClientService extends BaseService
      * @param array  $payload
      * @param array  $options
      *
-     * @return array|bool
+     * @return \stdClass|array|bool
      */
     public function delete( $uri, $payload = [], $options = [] )
     {
@@ -177,7 +197,7 @@ class OpsClientService extends BaseService
      * @param array  $payload
      * @param array  $options
      *
-     * @return array|bool
+     * @return \stdClass|array|bool
      */
     public function put( $uri, $payload = [], $options = [] )
     {
@@ -191,7 +211,7 @@ class OpsClientService extends BaseService
      * @param string $method
      * @param bool   $object If true, the result is returned as an object instead of an array
      *
-     * @return array|bool
+     * @return \stdClass|array|bool
      */
     protected function _apiCall( $url, $payload = [], $options = [], $method = Request::METHOD_POST, $object = true )
     {
