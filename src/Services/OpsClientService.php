@@ -154,6 +154,7 @@ class OpsClientService extends BaseService
 
     public function provision( array $payload )
     {
+        return $this->_apiCall( 'provision', $payload );
     }
 
     /**
