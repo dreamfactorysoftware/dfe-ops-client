@@ -45,10 +45,22 @@ class OpsClientServiceProvider extends BaseServiceProvider
             {
                 $_service = new OpsClientService( $app );
 
+                if ( !\Auth::guest() )
+                {
+                    $_key = \Auth::user()->getAppKey();
+
+                    return $_service->connect(
+                        config( 'dashboard.api-host' ),
+                        $_key->client_id,
+                        $_key->client_secret,
+                        config( 'dashboard.api-port', 80 )
+                    );
+                }
+
                 return $_service->connect(
                     config( 'dashboard.api-host' ),
-                    config( 'dashboard.client-id' ),
-                    config( 'dashboard.client-secret' ),
+                    config( 'dashboard.api-client-id' ),
+                    config( 'dashboard.api-client-secret' ),
                     config( 'dashboard.api-port', 80 )
                 );
             }

@@ -9,7 +9,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 
 class OpsClientService extends BaseService
 {
@@ -53,8 +52,8 @@ class OpsClientService extends BaseService
      */
     public function connect( $appServer, $clientId, $clientSecret, $port = 80 )
     {
-        $this->_signature = $this->_generateSignature( $clientId, $clientSecret );
         $this->_clientId = $clientId;
+        $this->_signature = $this->_generateSignature( $clientId, $clientSecret );
 
         $appServer = trim( $appServer, '/ ' );
 
@@ -154,7 +153,7 @@ class OpsClientService extends BaseService
 
     public function provision( array $payload )
     {
-        return $this->_apiCall( 'provision', $payload );
+        return $this->post( 'provision', $payload );
     }
 
     /**
@@ -206,6 +205,19 @@ class OpsClientService extends BaseService
     }
 
     /**
+     * @param string $uri
+     * @param array  $payload
+     * @param array  $options
+     * @param string $method
+     *
+     * @return array|bool|\stdClass
+     */
+    public function any( $uri, $payload = [], $options = [], $method = Request::METHOD_POST )
+    {
+        return $this->_apiCall( $uri, $payload, $options, $method );
+    }
+
+    /**
      * @param string $url
      * @param array  $payload
      * @param array  $options
@@ -250,7 +262,7 @@ class OpsClientService extends BaseService
     {
         return array_merge(
             array(
-                'user-id'      => Auth::user()->id,
+                'user-id'      => \Auth::user()->id,
                 'client-id'    => $this->_clientId,
                 'access-token' => $this->_signature,
             ),
