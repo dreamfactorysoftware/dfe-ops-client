@@ -262,7 +262,6 @@ class OpsClientService extends BaseService
     {
         return array_merge(
             array(
-                'user-id'      => \Auth::user()->id,
                 'client-id'    => $this->_clientId,
                 'access-token' => $this->_signature,
             ),
@@ -279,6 +278,6 @@ class OpsClientService extends BaseService
      */
     protected function _generateSignature( $clientId, $clientSecret )
     {
-        return hash_hmac( 'sha256', $clientId, $clientSecret );
+        return hash_hmac( config( 'dfe.signature-method', 'sha256' ), $clientId, $clientSecret );
     }
 }
