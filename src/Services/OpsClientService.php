@@ -43,27 +43,19 @@ class OpsClientService extends BaseService
     //*************************************************************************
 
     /**
-     * @param string $appServer    The hostname of the app server to use
-     * @param int    $port         The port on which to connect
+     * @param string $url          The url of the app server to use
      * @param string $clientId     Your application's client ID
      * @param string $clientSecret Your application's secret ID
+     * @param int    $port         The port on which to connect
      *
      * @return $this
      */
-    public function connect( $appServer, $clientId, $clientSecret, $port = 80 )
+    public function                 connect( $url, $clientId, $clientSecret, $port = null )
     {
         $this->_clientId = $clientId;
         $this->_signature = $this->_generateSignature( $clientId, $clientSecret );
 
-        $appServer = trim( $appServer, '/ ' );
-
-        if ( false === stripos( $appServer, 'http', 0 ) )
-        {
-            $appServer = ( 443 === $port ? 'https' : 'http' ) . '://' . $appServer;
-        }
-
-        //  base_url for guzzle NEEDS trailing slash in order to work properly
-        $_endpoint = $appServer . '/api/v' . static::API_VERSION . '/ops/';
+        $_endpoint = trim( $url, '/ ' ) . '/';
 
         //  Check the endpoint...
         if ( false === parse_url( $_endpoint ) )

@@ -50,18 +50,18 @@ class OpsClientServiceProvider extends BaseServiceProvider
                     $_key = \Auth::user()->getAppKey();
 
                     return $_service->connect(
-                        config( 'dashboard.api-host' ),
+                        config( 'dashboard.console-api-url' ),
                         $_key->client_id,
                         $_key->client_secret,
-                        config( 'dashboard.api-port', 80 )
+                        config( 'dashboard.console-api-port' )
                     );
                 }
 
                 return $_service->connect(
-                    config( 'dashboard.api-host' ),
-                    config( 'dashboard.api-client-id' ),
-                    config( 'dashboard.api-client-secret' ),
-                    config( 'dashboard.api-port', 80 )
+                    config( 'dashboard.console-api-url' ),
+                    config( 'dashboard.console-api-client-id' ),
+                    config( 'dashboard.console-api-client-secret' ),
+                    config( 'dashboard.console-api-port' )
                 );
             }
         );
