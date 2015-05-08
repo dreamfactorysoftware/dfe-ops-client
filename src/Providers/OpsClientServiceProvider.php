@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Enterprise\Console\Ops\Providers;
 
+use DreamFactory\Enterprise\Common\Enums\AppKeyClasses;
 use DreamFactory\Enterprise\Common\Providers\BaseServiceProvider;
 use DreamFactory\Enterprise\Console\Ops\Services\OpsClientService;
 
@@ -47,7 +48,14 @@ class OpsClientServiceProvider extends BaseServiceProvider
 
                 if ( !\Auth::guest() )
                 {
-                    $_key = \Auth::user()->getAppKey();
+                    $_keys = \Auth::user()->getKeys( AppKeyClasses::USER, \Auth::user()->id );
+
+                    if ( empty( $_keys ) || 0 == $_keys->count() )
+                    {
+                        throw new \LogicException( 'No authorization key found for this user.' );
+                    }
+
+                    $_key = $_keys[0];
 
                     return $_service->connect(
                         config( 'dashboard.console-api-url' ),
@@ -59,8 +67,8 @@ class OpsClientServiceProvider extends BaseServiceProvider
 
                 return $_service->connect(
                     config( 'dashboard.console-api-url' ),
-                    config( 'dashboard.console-api-client-id' ),
-                    config( 'dashboard.console-api-client-secret' ),
+                    config( 'dashboard.server.console-api-client-id' ),
+                    config( 'dashboard.server.console-api-client-secret' ),
                     config( 'dashboard.console-api-port' )
                 );
             }

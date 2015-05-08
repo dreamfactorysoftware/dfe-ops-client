@@ -50,7 +50,7 @@ class OpsClientService extends BaseService
      *
      * @return $this
      */
-    public function                 connect( $url, $clientId, $clientSecret, $port = null )
+    public function connect( $url, $clientId, $clientSecret, $port = null )
     {
         $this->_clientId = $clientId;
         $this->_signature = $this->_generateSignature( $clientId, $clientSecret );
