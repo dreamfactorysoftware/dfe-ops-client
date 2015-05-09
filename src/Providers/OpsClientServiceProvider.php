@@ -18,6 +18,10 @@ class OpsClientServiceProvider extends BaseServiceProvider
      * @type string The name of the service in the IoC
      */
     const IOC_NAME = 'dfe.console.client';
+    /**
+     * @type string Relative path to config file
+     */
+    const CONFIG_NAME = 'dfe-ops-client.php';
 
     //******************************************************************************
     //* Methods
@@ -32,6 +36,16 @@ class OpsClientServiceProvider extends BaseServiceProvider
     //* Public Methods
     //********************************************************************************
 
+    /** @inheritdoc */
+    public function boot()
+    {
+        $_libBase = realpath( __DIR__ . '/../../' );
+        $_configPath = $_libBase . '/config';
+
+        //  Config
+        $this->publishes( [$_configPath . '/' . static::CONFIG_NAME => config_path( static::CONFIG_NAME ),], 'config' );
+    }
+
     /**
      * Register the service provider.
      *
@@ -44,6 +58,7 @@ class OpsClientServiceProvider extends BaseServiceProvider
             static::IOC_NAME,
             function ( $app )
             {
+                $_clientId = $_clientSecret = null;
                 $_service = new OpsClientService( $app );
 
                 if ( !\Auth::guest() )
@@ -56,23 +71,17 @@ class OpsClientServiceProvider extends BaseServiceProvider
                     }
 
                     $_key = $_keys[0];
-
-                    return $_service->connect(
-                        config( 'dashboard.console-api-url' ),
-                        $_key->client_id,
-                        $_key->client_secret,
-                        config( 'dashboard.console-api-port' )
-                    );
+                    $_clientId = $_key->client_id;
+                    $_clientSecret = $_key->client_secret;
                 }
 
                 return $_service->connect(
-                    config( 'dashboard.console-api-url' ),
-                    config( 'dashboard.server.console-api-client-id' ),
-                    config( 'dashboard.server.console-api-client-secret' ),
-                    config( 'dashboard.console-api-port' )
+                    config( 'dfe-ops-client.console-api-url' ),
+                    $_clientId ?: config( 'dfe-ops-client.console-api-client-id' ),
+                    $_clientSecret ?: config( 'dfe-ops-client.console-api-client-secret' ),
+                    config( 'dfe-ops-client.console-api-port' )
                 );
             }
         );
     }
-
 }

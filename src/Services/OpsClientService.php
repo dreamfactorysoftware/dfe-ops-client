@@ -60,7 +60,7 @@ class OpsClientService extends BaseService
         //  Check the endpoint...
         if ( false === parse_url( $_endpoint ) )
         {
-            throw new \InvalidArgumentException( 'The specified endpoint is not valid.' );
+            throw new \InvalidArgumentException( 'The specified endpoint "' . $_endpoint . '" is not valid.' );
         }
 
         //  Create our client
