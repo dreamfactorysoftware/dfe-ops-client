@@ -26,17 +26,17 @@ class OpsClientService extends BaseService
     //*************************************************************************
 
     /**
-     * @var Client
+     * @type string
      */
-    protected $_client = null;
+    protected $_clientId;
     /**
      * @type string
      */
     protected $_signature;
     /**
-     * @type string
+     * @var Client
      */
-    protected $_clientId;
+    protected $_client = null;
 
     //*************************************************************************
     //* Methods
