@@ -17,7 +17,7 @@ class OpsClientServiceProvider extends BaseServiceProvider
     /**
      * @type string The name of the service in the IoC
      */
-    const IOC_NAME = 'dfe.console.client';
+    const IOC_NAME = 'dfe-ops-client';
     /**
      * @type string Relative path to config file
      */
@@ -39,8 +39,7 @@ class OpsClientServiceProvider extends BaseServiceProvider
     /** @inheritdoc */
     public function boot()
     {
-        $_libBase = realpath( __DIR__ . '/../../' );
-        $_configPath = $_libBase . '/config';
+        $_configPath = realpath( __DIR__ . '/../../' ) . '/config';
 
         //  Config
         $this->publishes( [$_configPath . '/' . static::CONFIG_NAME => config_path( static::CONFIG_NAME ),], 'config' );

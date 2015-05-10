@@ -270,6 +270,6 @@ class OpsClientService extends BaseService
      */
     protected function _generateSignature( $clientId, $clientSecret )
     {
-        return hash_hmac( config( 'dfe.signature-method', 'sha256' ), $clientId, $clientSecret );
+        return hash_hmac( config( 'dfe-ops-client.signature-method', 'sha256' ), $clientId, $clientSecret );
     }
 }

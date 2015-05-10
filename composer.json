@@ -10,7 +10,9 @@
 		"common",
 		"enterprise"
 	],
-	"license":           ["Apache-2.0"],
+	"license":           [
+		"Apache-2.0"
+	],
 	"type":              "library",
 	"authors":           [
 		{
@@ -38,6 +40,7 @@
 		"guzzlehttp/guzzle":       "~4.0"
 	},
 	"require-dev":       {
+		"dreamfactory/fabric-db":     "dev-develop as dev-master",
 		"dreamfactory/fabric-audit":  "dev-develop as dev-master",
 		"dreamfactory/fabric-common": "dev-develop as dev-master",
 		"laravel/framework":          "5.0.*",
