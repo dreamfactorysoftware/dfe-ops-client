@@ -220,16 +220,14 @@ class OpsClientService extends BaseService
      */
     protected function _apiCall( $url, $payload = [], $options = [], $method = Request::METHOD_POST, $object = true )
     {
-        if ( !isset( $options['body'] ) )
-        {
-            $options['body'] = [];
-        }
-
-        $options['body'] = array_merge( $options['body'], $this->_signPayload( $payload ) );
-
         try
         {
-            $_request = $this->_client->createRequest( $method, $url, $options );
+            $_request = $this->_client->createRequest(
+                $method,
+                $url,
+                array_merge( $options, ['json' => $this->_signPayload( $payload )] )
+            );
+
             $_response = $this->_client->send( $_request );
 
             return $_response->json( ['object' => $object] );
