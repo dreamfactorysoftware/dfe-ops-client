@@ -72,6 +72,14 @@ class OpsClientService extends BaseService
     /**
      * @return \stdClass
      */
+    public function provisioners()
+    {
+        return $this->post( 'provisioners' );
+    }
+
+    /**
+     * @return \stdClass
+     */
     public function instances()
     {
         return $this->post( 'instances' );
@@ -96,7 +104,7 @@ class OpsClientService extends BaseService
                 $_status->trial = false;
                 $_status->instanceState = ProvisionStates::DEPROVISIONED;
 
-                if ( Response::HTTP_NOT_FOUND == $_status->code )
+                if ( !$_status->deleted && Response::HTTP_NOT_FOUND == $_status->code )
                 {
                     $_status->deleted = true;
                 }
