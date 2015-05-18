@@ -2,9 +2,9 @@
 namespace DreamFactory\Enterprise\Console\Ops\Services;
 
 use DreamFactory\Enterprise\Common\Services\BaseService;
-use DreamFactory\Library\Fabric\Common\Components\JsonFile;
-use DreamFactory\Library\Fabric\Database\Enums\ProvisionStates;
+use DreamFactory\Enterprise\Database\Enums\ProvisionStates;
 use DreamFactory\Library\Utility\IfSet;
+use DreamFactory\Library\Utility\JsonFile;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
