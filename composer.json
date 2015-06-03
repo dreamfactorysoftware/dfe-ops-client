@@ -23,11 +23,11 @@
 	"repositories":      [
 		{
 			"type": "vcs",
-			"url":  "git@github.com:dreamfactorysoftware/fabric-common.git"
+			"url":  "git@github.com:dreamfactorysoftware/dfe-audit.git"
 		},
 		{
 			"type": "vcs",
-			"url":  "git@github.com:dreamfactorysoftware/fabric-db.git"
+			"url":  "git@github.com:dreamfactorysoftware/dfe-database.git"
 		},
 		{
 			"type": "vcs",
@@ -36,16 +36,15 @@
 	],
 	"minimum-stability": "dev",
 	"require":           {
-		"dreamfactory/dfe-common": "dev-develop as dev-master",
-		"guzzlehttp/guzzle":       "~4.0"
+		"dreamfactory/dfe-common":   "dev-develop as dev-master",
+		"dreamfactory/dfe-database": "dev-develop as dev-master",
+		"guzzlehttp/guzzle":         "~4.0"
 	},
 	"require-dev":       {
-		"dreamfactory/fabric-db":     "dev-develop as dev-master",
-		"dreamfactory/fabric-audit":  "dev-develop as dev-master",
-		"dreamfactory/fabric-common": "dev-develop as dev-master",
-		"laravel/framework":          "5.0.*",
-		"phpunit/phpunit":            "~4.0",
-		"phpspec/phpspec":            "~2.1"
+		"dreamfactory/dfe-audit": "dev-develop as dev-master",
+		"laravel/framework":      "5.0.*",
+		"phpunit/phpunit":        "~4.0",
+		"phpspec/phpspec":        "~2.1"
 	},
 	"autoload":          {
 		"psr-4": {

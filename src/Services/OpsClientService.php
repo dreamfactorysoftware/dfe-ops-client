@@ -3,7 +3,7 @@ namespace DreamFactory\Enterprise\Console\Ops\Services;
 
 use DreamFactory\Enterprise\Common\Enums\EnterpriseDefaults;
 use DreamFactory\Enterprise\Common\Services\BaseService;
-use DreamFactory\Enterprise\Database\Enums\ProvisionStates;
+use DreamFactory\Library\Fabric\Database\Enums\ProvisionStates;
 use DreamFactory\Library\Utility\IfSet;
 use DreamFactory\Library\Utility\JsonFile;
 use GuzzleHttp\Client;
