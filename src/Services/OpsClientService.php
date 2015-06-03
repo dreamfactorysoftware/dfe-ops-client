@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Enterprise\Console\Ops\Services;
 
+use DreamFactory\Enterprise\Common\Enums\EnterpriseDefaults;
 use DreamFactory\Enterprise\Common\Services\BaseService;
 use DreamFactory\Enterprise\Database\Enums\ProvisionStates;
 use DreamFactory\Library\Utility\IfSet;
@@ -276,6 +277,6 @@ class OpsClientService extends BaseService
      */
     protected function _generateSignature( $clientId, $clientSecret )
     {
-        return hash_hmac( config( 'dfe-ops-client.signature-method', 'sha256' ), $clientId, $clientSecret );
+        return hash_hmac( config( 'dfe.signature-method', EnterpriseDefaults::DEFAULT_SIGNATURE_METHOD ), $clientId, $clientSecret );
     }
 }

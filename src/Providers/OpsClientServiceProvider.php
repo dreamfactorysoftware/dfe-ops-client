@@ -21,7 +21,7 @@ class OpsClientServiceProvider extends BaseServiceProvider
     /**
      * @type string Relative path to config file
      */
-    const CONFIG_NAME = 'dfe-ops-client.php';
+    const CONFIG_NAME = 'dfe.security.php';
 
     //******************************************************************************
     //* Methods
@@ -75,10 +75,10 @@ class OpsClientServiceProvider extends BaseServiceProvider
                 }
 
                 return $_service->connect(
-                    config( 'dfe-ops-client.console-api-url' ),
-                    $_clientId ?: config( 'dfe-ops-client.console-api-client-id' ),
-                    $_clientSecret ?: config( 'dfe-ops-client.console-api-client-secret' ),
-                    config( 'dfe-ops-client.console-api-port' )
+                    config( 'dfe.security.console-api-url' ),
+                    $_clientId ?: config( 'dfe.security.console-api-client-id' ),
+                    $_clientSecret ?: config( 'dfe.security.console-api-client-secret' ),
+                    config( 'dfe.security.console-api-port' )
                 );
             }
         );
