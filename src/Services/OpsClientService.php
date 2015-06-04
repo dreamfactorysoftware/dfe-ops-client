@@ -1,9 +1,9 @@
 <?php
 namespace DreamFactory\Enterprise\Console\Ops\Services;
 
-use DreamFactory\Enterprise\Common\Enums\EnterpriseDefaults;
 use DreamFactory\Enterprise\Common\Services\BaseService;
-use DreamFactory\Library\Fabric\Database\Enums\ProvisionStates;
+use DreamFactory\Enterprise\Common\Traits\VerifiesSignatures;
+use DreamFactory\Enterprise\Database\Enums\ProvisionStates;
 use DreamFactory\Library\Utility\IfSet;
 use DreamFactory\Library\Utility\JsonFile;
 use GuzzleHttp\Client;
@@ -22,18 +22,16 @@ class OpsClientService extends BaseService
      */
     const API_VERSION = 1;
 
+    //******************************************************************************
+    //* Traits
+    //******************************************************************************
+
+    use VerifiesSignatures;
+
     //*************************************************************************
     //* Members
     //*************************************************************************
 
-    /**
-     * @type string
-     */
-    protected $_clientId;
-    /**
-     * @type string
-     */
-    protected $_signature;
     /**
      * @var Client
      */
@@ -53,9 +51,6 @@ class OpsClientService extends BaseService
      */
     public function connect( $url, $clientId, $clientSecret, $port = null )
     {
-        $this->_clientId = $clientId;
-        $this->_signature = $this->_generateSignature( $clientId, $clientSecret );
-
         $_endpoint = trim( $url, '/ ' ) . '/';
 
         //  Check the endpoint...
@@ -63,6 +58,9 @@ class OpsClientService extends BaseService
         {
             throw new \InvalidArgumentException( 'The specified endpoint "' . $_endpoint . '" is not valid.' );
         }
+
+        //  Check and set credentials
+        $this->_setSigningCredentials( $clientId, $clientSecret );
 
         //  Create our client
         $this->_client = new Client( ['base_url' => $_endpoint] );
@@ -234,7 +232,7 @@ class OpsClientService extends BaseService
             $_request = $this->_client->createRequest(
                 $method,
                 $url,
-                array_merge( $options, ['json' => $this->_signPayload( $payload )] )
+                array_merge( $options, ['json' => $this->_signRequest( $payload )] )
             );
 
             $_response = $this->_client->send( $_request );
@@ -250,33 +248,5 @@ class OpsClientService extends BaseService
         }
 
         return false;
-    }
-
-    /**
-     * @param array $payload
-     *
-     * @return array
-     */
-    protected function _signPayload( array $payload )
-    {
-        return array_merge(
-            array(
-                'client-id'    => $this->_clientId,
-                'access-token' => $this->_signature,
-            ),
-            $payload ?: []
-        );
-
-    }
-
-    /**
-     * @param string $clientId
-     * @param string $clientSecret
-     *
-     * @return string
-     */
-    protected function _generateSignature( $clientId, $clientSecret )
-    {
-        return hash_hmac( config( 'dfe.signature-method', EnterpriseDefaults::DEFAULT_SIGNATURE_METHOD ), $clientId, $clientSecret );
     }
 }
