@@ -47,7 +47,7 @@
   "require-dev":       {
     "dreamfactory/dfe-audit": "dev-develop as dev-master",
     "laravel/framework":      "5.1.*",
-    "phpunit/phpunit":        "~4.0",
+    "phpunit/phpunit":        "@stable",
     "phpspec/phpspec":        "~2.1"
   },
   "autoload":          {
