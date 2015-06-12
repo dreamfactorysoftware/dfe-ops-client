@@ -3,6 +3,7 @@
   <component name="ComposerJsonPluginSettings">
     <unboundedVersionInspectionSettings>
       <excludedPackages>
+        <pattern pattern="dreamfactory/*" />
         <pattern pattern="guzzlehttp/guzzle" />
         <pattern pattern="dreamfactory/dfe-common" />
       </excludedPackages>
