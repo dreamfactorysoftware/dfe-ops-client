@@ -1,7 +1,6 @@
 <?php
 namespace DreamFactory\Enterprise\Console\Ops\Providers;
 
-use DreamFactory\Enterprise\Common\Enums\AppKeyClasses;
 use DreamFactory\Enterprise\Common\Providers\BaseServiceProvider;
 use DreamFactory\Enterprise\Console\Ops\Services\OpsClientService;
 
@@ -17,19 +16,10 @@ class OpsClientServiceProvider extends BaseServiceProvider
     /**
      * @type string The name of the service in the IoC
      */
-    const IOC_NAME = 'dfe-ops-client';
-
-    //******************************************************************************
-    //* Methods
-    //******************************************************************************
-
-    /**
-     * @type string The actual provisioning service
-     */
-    protected $_serviceClass = 'DreamFactory\\Enterprise\\Console\\Ops\\Services\\OpsClientService';
+    const IOC_NAME = 'dfe.ops-client';
 
     //********************************************************************************
-    //* Public Methods
+    //* Methods
     //********************************************************************************
 
     /**
@@ -42,18 +32,16 @@ class OpsClientServiceProvider extends BaseServiceProvider
         //  Register the manager
         $this->singleton(
             static::IOC_NAME,
-            function ( $app )
-            {
+            function ($app) {
                 $_clientId = $_clientSecret = null;
-                $_service = new OpsClientService( $app );
+                $_service = new OpsClientService($app);
 
-                if ( !\Auth::guest() )
-                {
-                    $_keys = \Auth::user()->getKeys( AppKeyClasses::USER, \Auth::user()->id );
+                if (!\Auth::guest()) {
+                    /** @noinspection PhpUndefinedMethodInspection */
+                    $_keys = \Auth::user()->getUserKeys(\Auth::user()->id);
 
-                    if ( empty( $_keys ) || 0 == $_keys->count() )
-                    {
-                        throw new \LogicException( 'No authorization key found for this user.' );
+                    if (empty($_keys) || 0 == $_keys->count()) {
+                        throw new \LogicException('No authorization key found for this user.');
                     }
 
                     $_key = $_keys[0];
@@ -62,10 +50,10 @@ class OpsClientServiceProvider extends BaseServiceProvider
                 }
 
                 return $_service->connect(
-                    config( 'dfe.security.console-api-url' ),
-                    $_clientId ?: config( 'dfe.security.console-api-client-id' ),
-                    $_clientSecret ?: config( 'dfe.security.console-api-client-secret' ),
-                    config( 'dfe.security.console-api-port' )
+                    config('dfe.security.console-api-url'),
+                    $_clientId ?: config('dfe.security.console-api-client-id'),
+                    $_clientSecret ?: config('dfe.security.console-api-client-secret'),
+                    config('dfe.security.console-api-port')
                 );
             }
         );
