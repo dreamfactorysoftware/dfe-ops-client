@@ -3,6 +3,7 @@ namespace DreamFactory\Enterprise\Console\Ops\Providers;
 
 use DreamFactory\Enterprise\Common\Providers\BaseServiceProvider;
 use DreamFactory\Enterprise\Console\Ops\Services\OpsClientService;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Register the hosting service
@@ -38,13 +39,15 @@ class OpsClientServiceProvider extends BaseServiceProvider
 
                 if (!\Auth::guest()) {
                     /** @noinspection PhpUndefinedMethodInspection */
-                    $_keys = \Auth::user()->getUserKeys(\Auth::user()->id);
+                    /** @type Collection $_keys */
+                    $_keys = \Auth::user()->appKeys();
 
+                    /** @noinspection PhpUndefinedMethodInspection */
                     if (empty($_keys) || 0 == $_keys->count()) {
                         throw new \LogicException('No authorization key found for this user.');
                     }
 
-                    $_key = $_keys[0];
+                    $_key = $_keys->first();
                     $_clientId = $_key->client_id;
                     $_clientSecret = $_key->client_secret;
                 }
