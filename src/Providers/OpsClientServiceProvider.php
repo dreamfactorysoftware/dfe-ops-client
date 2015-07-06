@@ -31,11 +31,9 @@ class OpsClientServiceProvider extends BaseServiceProvider
     public function register()
     {
         //  Register the manager
-        $this->singleton(
-            static::IOC_NAME,
+        $this->singleton(static::IOC_NAME,
             function ($app) {
                 $_clientId = $_clientSecret = null;
-                $_service = new OpsClientService($app);
 
                 if (!\Auth::guest()) {
                     /** @noinspection PhpUndefinedMethodInspection */
@@ -52,13 +50,14 @@ class OpsClientServiceProvider extends BaseServiceProvider
                     $_clientSecret = $_key->client_secret;
                 }
 
-                return $_service->connect(
-                    config('dfe.security.console-api-url'),
-                    $_clientId ?: config('dfe.security.console-api-client-id'),
-                    $_clientSecret ?: config('dfe.security.console-api-client-secret'),
-                    config('dfe.security.console-api-port')
-                );
-            }
-        );
+                $_service = new OpsClientService($app);
+
+                return $_service->connect(config('dfe.security.console-api-url'),
+                    [
+                        'client-id'     => $_clientId ?: config('dfe.security.console-api-client-id'),
+                        'client-secret' => $_clientSecret ?: config('dfe.security.console-api-client-secret'),
+                    ],
+                    config('dfe.security.guzzle-config', []));
+            });
     }
 }

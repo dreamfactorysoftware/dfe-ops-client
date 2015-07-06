@@ -2,40 +2,18 @@
 namespace DreamFactory\Enterprise\Console\Ops\Services;
 
 use DreamFactory\Enterprise\Common\Services\BaseService;
-use DreamFactory\Enterprise\Common\Traits\VerifiesSignatures;
+use DreamFactory\Enterprise\Common\Traits\Guzzler;
 use DreamFactory\Enterprise\Database\Enums\ProvisionStates;
-use DreamFactory\Library\Utility\IfSet;
-use DreamFactory\Library\Utility\JsonFile;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class OpsClientService extends BaseService
 {
     //******************************************************************************
-    //* Constants
-    //******************************************************************************
-
-    /**
-     * @type int The API version to target
-     */
-    const API_VERSION = 1;
-
-    //******************************************************************************
     //* Traits
     //******************************************************************************
 
-    use VerifiesSignatures;
-
-    //*************************************************************************
-    //* Members
-    //*************************************************************************
-
-    /**
-     * @var Client
-     */
-    protected $client = null;
+    use Guzzler;
 
     //*************************************************************************
     //* Methods
@@ -44,66 +22,61 @@ class OpsClientService extends BaseService
     /**
      * Initialize and set up the transport layer
      *
-     * @param string $url          The url of the app server to use
-     * @param string $clientId     Your application's client ID
-     * @param string $clientSecret Your application's secret ID
-     * @param int    $port         The port on which to connect
+     * @param string $url         The url of the app server to use
+     * @param array  $credentials Any connection credentials
+     * @param array  $config      Any GuzzleHttp options
      *
      * @return $this
      */
-    public function connect($url, $clientId, $clientSecret, $port = null)
+    public function connect($url, $credentials = [], $config = [])
     {
-        $_endpoint = trim($url, '/ ') . '/';
-
-        //  Check the endpoint...
-        if (false === parse_url($_endpoint)) {
-            throw new \InvalidArgumentException('The specified endpoint "' . $_endpoint . '" is not valid.');
-        }
-
-        //  Check and set credentials
-        $this->setSigningCredentials($clientId, $clientSecret);
-
-        //  Create our client
-        if (null === $this->client) {
-            $this->client = new Client(['base_url' => $_endpoint]);
-        }
-
-        return $this;
+        return $this->createRequest($url,
+            [
+                'client-id'     => array_get($credentials, 'client-id'),
+                'client-secret' => array_get($credentials, 'client-secret'),
+            ],
+            $config);
     }
 
     /**
      * Retrieve a list of all provisioners available
      *
+     * @param array $options Any guzzlehttp options
+     * @param bool  $object  If true, results are returned as an object. Otherwise data is in array form
+     *
      * @return \stdClass
-     * @api /api/v1/ops/provisioners
      */
-    public function provisioners()
+    public function provisioners($options = [], $object = true)
     {
-        return $this->post('provisioners');
+        return $this->guzzlePost('provisioners', [], $options, $object);
     }
 
     /**
      * Retrieve a list of all instances for the user
      *
+     * @param array $options Any guzzlehttp options
+     * @param bool  $object  If true, results are returned as an object. Otherwise data is in array form
+     *
      * @return \stdClass
-     * @api /api/v1/ops/instances
      */
-    public function instances()
+    public function instances($options = [], $object = true)
     {
-        return $this->post('instances');
+        return $this->guzzlePost('instances', [], $options, $object);
     }
 
     /**
      * Retrieve status of an instance
      *
      * @param string $id
+     * @param array  $options Any guzzlehttp options
+     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
      *
      * @return \stdClass
      * @api /api/v1/ops/status/{id}
      */
-    public function status($id)
+    public function status($id, $options = [], $object = true)
     {
-        $_status = $this->post('status', ['id' => $id]);
+        $_status = $this->guzzlePost('status', ['id' => $id], $options, $object);
         $_status->deleted = false;
 
         if (!$_status->success) {
@@ -126,19 +99,20 @@ class OpsClientService extends BaseService
      * Register a new user
      *
      * @param array $payload
+     * @param array $options Any guzzlehttp options
+     * @param bool  $object  If true, results are returned as an object. Otherwise data is in array form
      *
      * @return bool
-     * @api /api/v1/ops/register
      */
-    public function register(array $payload)
+    public function register(array $payload = [], $options = [], $object = true)
     {
-        if (empty($payload) || null === ($_email = IfSet::get($payload, 'email'))) {
+        if (empty($payload) || null === ($_email = array_get($payload, 'email'))) {
             $this->error('register: empty payload or no email address given.');
 
             return false;
         }
 
-        if (false === ($_result = $this->post('register', $payload))) {
+        if (false === ($_result = $this->guzzlePost('register', $payload, $options, $object))) {
             $this->error('register: cannot connect to server');
 
             return false;
@@ -147,12 +121,12 @@ class OpsClientService extends BaseService
         $_code = 1;
 
         if (Response::HTTP_OK != $_code && Response::HTTP_CREATED != $_code) {
-            $this->error('register: error ' . $_code . ' registering new user');
+            $this->error('error ' . $_code . ' registering new user');
 
             return false;
         }
 
-        $this->info('register: user creation success ' . print_r($_result, true));
+        $this->info('user creation success ' . print_r($_result, true));
 
         return true;
     }
@@ -161,13 +135,28 @@ class OpsClientService extends BaseService
      * Provision a new instance
      *
      * @param array $payload
+     * @param array $options Any guzzlehttp options
+     * @param bool  $object  If true, results are returned as an object. Otherwise data is in array form
      *
      * @return array|bool|\stdClass
-     * @api /api/v1/ops/provision
      */
-    public function provision(array $payload)
+    public function provision(array $payload, $options = [], $object = true)
     {
-        return $this->post('provision', $payload);
+        return $this->post('provision', $payload, $options, $object);
+    }
+
+    /**
+     * Provision a new instance
+     *
+     * @param array $payload
+     * @param array $options Any guzzlehttp options
+     * @param bool  $object  If true, results are returned as an object. Otherwise data is in array form
+     *
+     * @return array|bool|\stdClass
+     */
+    public function deprovision(array $payload, $options = [], $object = true)
+    {
+        return $this->post('deprovision', $payload, $options, $object);
     }
 
     /**
@@ -175,13 +164,14 @@ class OpsClientService extends BaseService
      *
      * @param string $uri
      * @param array  $payload
-     * @param array  $options
+     * @param array  $options Any guzzlehttp options
+     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
      *
      * @return array|bool
      */
-    public function get($uri, $payload = [], $options = [])
+    public function get($uri, $payload = [], $options = [], $object = true)
     {
-        return $this->apiCall($uri, $payload, $options, Request::METHOD_GET);
+        return $this->guzzleGet($uri, $payload, $options, $object);
     }
 
     /**
@@ -189,13 +179,14 @@ class OpsClientService extends BaseService
      *
      * @param string $uri
      * @param array  $payload
-     * @param array  $options
+     * @param array  $options Any guzzlehttp options
+     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
      *
      * @return \stdClass|array|bool
      */
-    public function post($uri, $payload = [], $options = [])
+    public function post($uri, $payload = [], $options = [], $object = true)
     {
-        return $this->apiCall($uri, $payload, $options, Request::METHOD_POST);
+        return $this->guzzlePost($uri, $payload, $options, $object);
     }
 
     /**
@@ -203,13 +194,14 @@ class OpsClientService extends BaseService
      *
      * @param string $uri
      * @param array  $payload
-     * @param array  $options
+     * @param array  $options Any guzzlehttp options
+     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
      *
      * @return \stdClass|array|bool
      */
-    public function delete($uri, $payload = [], $options = [])
+    public function delete($uri, $payload = [], $options = [], $object = true)
     {
-        return $this->apiCall($uri, $payload, $options, Request::METHOD_DELETE);
+        return $this->guzzleDelete($uri, $payload, $options, $object);
     }
 
     /**
@@ -217,13 +209,14 @@ class OpsClientService extends BaseService
      *
      * @param string $uri
      * @param array  $payload
-     * @param array  $options
+     * @param array  $options Any guzzlehttp options
+     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
      *
      * @return \stdClass|array|bool
      */
-    public function put($uri, $payload = [], $options = [])
+    public function put($uri, $payload = [], $options = [], $object = true)
     {
-        return $this->apiCall($uri, $payload, $options, Request::METHOD_PUT);
+        return $this->guzzlePut($uri, $payload, $options, $object);
     }
 
     /**
@@ -231,43 +224,14 @@ class OpsClientService extends BaseService
      *
      * @param string $uri
      * @param array  $payload
-     * @param array  $options
+     * @param array  $options Any guzzlehttp options
      * @param string $method
+     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
      *
      * @return array|bool|\stdClass
      */
-    public function any($uri, $payload = [], $options = [], $method = Request::METHOD_POST)
+    public function any($uri, $payload = [], $options = [], $method = Request::METHOD_POST, $object = true)
     {
-        return $this->apiCall($uri, $payload, $options, $method);
-    }
-
-    /**
-     * @param string $url
-     * @param array  $payload
-     * @param array  $options
-     * @param string $method
-     * @param bool   $object If true, the result is returned as an object instead of an array
-     *
-     * @return \stdClass|array|bool
-     */
-    protected function apiCall($url, $payload = [], $options = [], $method = Request::METHOD_POST, $object = true)
-    {
-        try {
-            $_request = $this->client->createRequest(
-                $method,
-                $url,
-                array_merge($options, ['json' => $this->_signRequest($payload)])
-            );
-
-            $_response = $this->client->send($_request);
-
-            return $_response->json(['object' => $object]);
-        } catch (RequestException $_ex) {
-            if ($_ex->hasResponse()) {
-                return JsonFile::encode($_ex->getResponse());
-            }
-        }
-
-        return false;
+        return $this->guzzleAny($uri, $payload, $options, $method, $object);
     }
 }
