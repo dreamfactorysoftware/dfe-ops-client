@@ -1,10 +1,8 @@
-<?php
-namespace DreamFactory\Enterprise\Console\Ops\Services;
+<?php namespace DreamFactory\Enterprise\Console\Ops\Services;
 
 use DreamFactory\Enterprise\Common\Services\BaseService;
 use DreamFactory\Enterprise\Common\Traits\Guzzler;
 use DreamFactory\Enterprise\Database\Enums\ProvisionStates;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class OpsClientService extends BaseService
@@ -142,7 +140,9 @@ class OpsClientService extends BaseService
      */
     public function provision(array $payload, $options = [], $object = true)
     {
-        return $this->post('provision', $payload, $options, $object);
+        if (false === ($_response = $this->guzzlePost('provision', $payload, $options, $object))) {
+
+        }
     }
 
     /**
@@ -156,82 +156,6 @@ class OpsClientService extends BaseService
      */
     public function deprovision(array $payload, $options = [], $object = true)
     {
-        return $this->post('deprovision', $payload, $options, $object);
-    }
-
-    /**
-     * Perform a GET
-     *
-     * @param string $uri
-     * @param array  $payload
-     * @param array  $options Any guzzlehttp options
-     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
-     *
-     * @return array|bool
-     */
-    public function get($uri, $payload = [], $options = [], $object = true)
-    {
-        return $this->guzzleGet($uri, $payload, $options, $object);
-    }
-
-    /**
-     * Perform a POST
-     *
-     * @param string $uri
-     * @param array  $payload
-     * @param array  $options Any guzzlehttp options
-     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
-     *
-     * @return \stdClass|array|bool
-     */
-    public function post($uri, $payload = [], $options = [], $object = true)
-    {
-        return $this->guzzlePost($uri, $payload, $options, $object);
-    }
-
-    /**
-     * Perform a DELETE
-     *
-     * @param string $uri
-     * @param array  $payload
-     * @param array  $options Any guzzlehttp options
-     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
-     *
-     * @return \stdClass|array|bool
-     */
-    public function delete($uri, $payload = [], $options = [], $object = true)
-    {
-        return $this->guzzleDelete($uri, $payload, $options, $object);
-    }
-
-    /**
-     * Perform a PUT
-     *
-     * @param string $uri
-     * @param array  $payload
-     * @param array  $options Any guzzlehttp options
-     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
-     *
-     * @return \stdClass|array|bool
-     */
-    public function put($uri, $payload = [], $options = [], $object = true)
-    {
-        return $this->guzzlePut($uri, $payload, $options, $object);
-    }
-
-    /**
-     * Handle any other requests as POSTs
-     *
-     * @param string $uri
-     * @param array  $payload
-     * @param array  $options Any guzzlehttp options
-     * @param string $method
-     * @param bool   $object  If true, results are returned as an object. Otherwise data is in array form
-     *
-     * @return array|bool|\stdClass
-     */
-    public function any($uri, $payload = [], $options = [], $method = Request::METHOD_POST, $object = true)
-    {
-        return $this->guzzleAny($uri, $payload, $options, $method, $object);
+        return $this->guzzlePost('deprovision', $payload, $options, $object);
     }
 }
