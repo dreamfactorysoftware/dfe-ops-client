@@ -1,6 +1,6 @@
 {
   "name":              "dreamfactory/dfe-ops-client",
-  "description":       "DreamFactory Enterprise(tm) Console Operations Client",
+  "description":       "DreamFactory Enterprise(tm) Console API Service Library",
   "homepage":          "https://www.dreamfactory.com/",
   "keywords":          [
     "dreamfactory",
@@ -42,7 +42,7 @@
   "require":           {
     "dreamfactory/dfe-common":   "dev-develop as dev-master",
     "dreamfactory/dfe-database": "dev-develop as dev-master",
-    "guzzlehttp/guzzle":         "~4.0"
+    "guzzlehttp/guzzle":         "~6.0"
   },
   "require-dev":       {
     "dreamfactory/dfe-audit": "dev-develop as dev-master",

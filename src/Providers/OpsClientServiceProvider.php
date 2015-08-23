@@ -32,7 +32,7 @@ class OpsClientServiceProvider extends BaseServiceProvider
     {
         //  Register the manager
         $this->singleton(static::IOC_NAME,
-            function ($app) {
+            function ($app){
                 $_clientId = $_clientSecret = null;
 
                 if (!\Auth::guest()) {
