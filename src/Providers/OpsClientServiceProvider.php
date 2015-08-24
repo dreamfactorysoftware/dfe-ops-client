@@ -52,7 +52,7 @@ class OpsClientServiceProvider extends BaseServiceProvider
 
                 $_service = new OpsClientService($app);
 
-                return $_service->connect(config('dfe.security.console-api-url'),
+                return $_service->connect(rtrim(config('dfe.security.console-api-url'), '/') . '/',
                     [
                         'client-id'     => $_clientId ?: config('dfe.security.console-api-client-id'),
                         'client-secret' => $_clientSecret ?: config('dfe.security.console-api-client-secret'),
