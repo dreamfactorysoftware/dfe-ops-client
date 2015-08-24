@@ -42,7 +42,7 @@ class OpsClientServiceProvider extends BaseServiceProvider
 
                     /** @noinspection PhpUndefinedMethodInspection */
                     if (empty($_keys) || 0 == $_keys->count()) {
-                        throw new \LogicException('No authorization key found for this user.');
+                        throw new \LogicException('dfe-ops-client: No authorization key found for this client.');
                     }
 
                     $_key = $_keys->first();
