@@ -48,8 +48,7 @@ class OpsClientServiceProvider extends BaseServiceProvider
                     $_key = $_keys->first();
                     $_clientId = $_key->client_id;
                     $_clientSecret = $_key->client_secret;
-
-                    \Log::debug('client key located for user "' . \Auth::user()->id . '": ' . $_clientId);
+                    //\Log::debug('client key located for user "' . \Auth::user()->id . '": ' . $_clientId);
                 }
 
                 $_service = new OpsClientService($app);
