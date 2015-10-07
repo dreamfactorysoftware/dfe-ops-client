@@ -31,34 +31,33 @@ class OpsClientServiceProvider extends BaseServiceProvider
     public function register()
     {
         //  Register the manager
-        $this->singleton(static::IOC_NAME,
-            function ($app){
-                $_clientId = $_clientSecret = null;
+        $this->singleton(static::IOC_NAME, function ($app){
+            $_clientId = $_clientSecret = null;
 
-                if (!\Auth::guest()) {
-                    /** @noinspection PhpUndefinedMethodInspection */
-                    /** @type Collection $_keys */
-                    $_keys = \Auth::user()->appKeys();
+            if (!\Auth::guest()) {
+                /** @noinspection PhpUndefinedMethodInspection */
+                /** @type Collection $_keys */
+                $_keys = \Auth::user()->appKeys();
 
-                    /** @noinspection PhpUndefinedMethodInspection */
-                    if (empty($_keys) || 0 == $_keys->count()) {
-                        throw new \LogicException('dfe-ops-client: No authorization key found for this client.');
-                    }
-
-                    $_key = $_keys->first();
-                    $_clientId = $_key->client_id;
-                    $_clientSecret = $_key->client_secret;
-                    //\Log::debug('client key located for user "' . \Auth::user()->id . '": ' . $_clientId);
+                /** @noinspection PhpUndefinedMethodInspection */
+                if (empty($_keys) || 0 == $_keys->count()) {
+                    throw new \LogicException('dfe-ops-client: No authorization key found for this client.');
                 }
 
-                $_service = new OpsClientService($app);
+                $_key = $_keys->first();
+                $_clientId = $_key->client_id;
+                $_clientSecret = $_key->client_secret;
+                //\Log::debug('client key located for user "' . \Auth::user()->id . '": ' . $_clientId);
+            }
 
-                return $_service->connect(rtrim(config('dfe.security.console-api-url'), '/') . '/',
-                    [
-                        'client-id'     => $_clientId ?: config('dfe.security.console-api-client-id'),
-                        'client-secret' => $_clientSecret ?: config('dfe.security.console-api-client-secret'),
-                    ],
-                    config('dfe.security.guzzle-config', []));
-            });
+            $_service = new OpsClientService($app);
+            $_uri = rtrim(config('dfe.security.console-api-url'), '/') . '/';
+            \Log::debug('client uri = ' . $_uri);
+
+            return $_service->connect($_uri, [
+                'client-id'     => $_clientId ?: config('dfe.security.console-api-client-id'),
+                'client-secret' => $_clientSecret ?: config('dfe.security.console-api-client-secret'),
+            ], config('dfe.security.guzzle-config', []));
+        });
     }
 }
