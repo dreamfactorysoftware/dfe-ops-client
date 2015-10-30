@@ -11,7 +11,7 @@
     "enterprise"
   ],
   "license":           [
-    "Apache-2.0"
+    "proprietary"
   ],
   "type":              "library",
   "authors":           [
@@ -21,10 +21,6 @@
     }
   ],
   "repositories":      [
-    {
-      "type": "vcs",
-      "url":  "https://github.com/dreamfactorysoftware/dfe-audit.git"
-    },
     {
       "type": "vcs",
       "url":  "https://github.com/dreamfactorysoftware/dfe-database.git"
@@ -40,15 +36,14 @@
   ],
   "minimum-stability": "dev",
   "require":           {
-    "dreamfactory/dfe-common":   "dev-develop as dev-master",
-    "dreamfactory/dfe-database": "dev-develop as dev-master",
+    "dreamfactory/dfe-common":   "1.0.*",
+    "dreamfactory/dfe-database": "1.0.*",
     "guzzlehttp/guzzle":         "~4.0"
   },
   "require-dev":       {
-    "dreamfactory/dfe-audit": "dev-develop as dev-master",
-    "laravel/framework":      "5.1.*",
-    "phpunit/phpunit":        "@stable",
-    "phpspec/phpspec":        "~2.1"
+    "laravel/framework": "5.1.*",
+    "phpunit/phpunit":   "@stable",
+    "phpspec/phpspec":   "~2.1"
   },
   "autoload":          {
     "psr-4": {
@@ -60,7 +55,7 @@
   },
   "extra":             {
     "branch-alias": {
-      "dev-develop": "0.1.x-dev"
+      "dev-develop": "1.0.x-dev"
     }
   }
 }

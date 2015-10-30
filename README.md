@@ -1,1 +1,3 @@
-## DreamFactory Enterprise(tm) Console Operations Client v0.1.x-dev
+## DreamFactory Enterprise(tm) Console Operations Client
+See the [DreamFactory](https://www.dreamfactory.com/) site for more information
+
