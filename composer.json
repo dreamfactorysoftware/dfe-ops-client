@@ -35,7 +35,7 @@
         }
     ],
     "minimum-stability": "dev",
-    "prefer-stable":     true,
+    "prefer-stable":     false,
     "require":           {
         "dreamfactory/dfe-common":   "1.0.*",
         "dreamfactory/dfe-database": "1.0.*",
