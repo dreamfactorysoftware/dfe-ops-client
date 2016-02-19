@@ -140,8 +140,7 @@ class OpsClientService extends BaseService
      */
     public function provision(array $payload, $options = [], $object = true)
     {
-        if (false === ($_response = $this->guzzlePost('provision', $payload, $options, $object))) {
-        }
+        return $this->guzzlePost('provision', $payload, $options, $object);
     }
 
     /**
