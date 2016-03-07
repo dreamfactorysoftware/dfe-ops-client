@@ -34,15 +34,15 @@
             "url":  "https://github.com/dreamfactorysoftware/dfe-common.git"
         }
     ],
-    "minimum-stability": "dev",
     "prefer-stable":     false,
+    "minimum-stability": "dev",
     "require":           {
-        "dreamfactory/dfe-common":   "1.0.*",
-        "dreamfactory/dfe-database": "1.0.*",
+        "dreamfactory/dfe-common":   "dev-feature/l52-upgrade as dev-master",
+        "dreamfactory/dfe-database": "dev-feature/l52-upgrade as dev-master",
         "guzzlehttp/guzzle":         "~6.0"
     },
     "require-dev":       {
-        "laravel/framework": "5.1.*",
+        "laravel/framework": "5.2.*",
         "phpunit/phpunit":   "@stable",
         "phpspec/phpspec":   "~2.1"
     },
