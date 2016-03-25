@@ -1,5 +1,4 @@
-<?php
-namespace DreamFactory\Enterprise\Console\Ops\Providers;
+<?php namespace DreamFactory\Enterprise\Console\Ops\Providers;
 
 use DreamFactory\Enterprise\Common\Providers\BaseServiceProvider;
 use DreamFactory\Enterprise\Console\Ops\Services\OpsClientService;
