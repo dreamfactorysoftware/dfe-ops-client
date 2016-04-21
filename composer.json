@@ -37,8 +37,8 @@
     "prefer-stable":     false,
     "minimum-stability": "dev",
     "require":           {
-        "dreamfactory/dfe-common":   "dev-feature/l52-upgrade as dev-master",
-        "dreamfactory/dfe-database": "dev-feature/l52-upgrade as dev-master",
+        "dreamfactory/dfe-common":   "dev-develop as dev-master",
+        "dreamfactory/dfe-database": "dev-develop as dev-master",
         "guzzlehttp/guzzle":         "~6.0"
     },
     "require-dev":       {
