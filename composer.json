@@ -37,9 +37,9 @@
     "prefer-stable":     false,
     "minimum-stability": "dev",
     "require":           {
-        "dreamfactory/dfe-common":   "dev-develop as dev-master",
-        "dreamfactory/dfe-database": "dev-develop as dev-master",
-        "guzzlehttp/guzzle":         "~6.0"
+        "dreamfactory/dfe-common":   "1.0.*",
+        "dreamfactory/dfe-database": "1.0.*",
+        "guzzlehttp/guzzle":         "~4.0"
     },
     "require-dev":       {
         "laravel/framework": "5.2.*",
