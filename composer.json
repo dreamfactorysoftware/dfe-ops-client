@@ -37,8 +37,8 @@
     "prefer-stable":     false,
     "minimum-stability": "dev",
     "require":           {
-        "dreamfactory/dfe-common":   "1.0.*",
-        "dreamfactory/dfe-database": "1.0.*",
+        "dreamfactory/dfe-common":   "1.1.*",
+        "dreamfactory/dfe-database": "1.1.*",
         "guzzlehttp/guzzle":         "~4.0"
     },
     "require-dev":       {
